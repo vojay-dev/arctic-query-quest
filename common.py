@@ -11,7 +11,7 @@ class AppState(Enum):
 
 
 def apply_style():
-    st.html(f"<style>{Path("style.css").read_text()}</style>")
+    st.html(f"<style>{Path('style.css').read_text()}</style>")
 
 
 def configure():
