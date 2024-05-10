@@ -342,13 +342,13 @@ files = [
 
 [[package]]
 name = "dataclasses-json"
-version = "0.6.5"
+version = "0.6.6"
 description = "Easily serialize dataclasses to and from JSON."
 optional = false
 python-versions = "<4.0,>=3.7"
 files = [
-    {file = "dataclasses_json-0.6.5-py3-none-any.whl", hash = "sha256:f49c77aa3a85cac5bf5b7f65f4790ca0d2be8ef4d92c75e91ba0103072788a39"},
-    {file = "dataclasses_json-0.6.5.tar.gz", hash = "sha256:1c287594d9fcea72dc42d6d3836cf14848c2dc5ce88f65ed61b36b57f515fe26"},
+    {file = "dataclasses_json-0.6.6-py3-none-any.whl", hash = "sha256:e54c5c87497741ad454070ba0ed411523d46beb5da102e221efb873801b0ba85"},
+    {file = "dataclasses_json-0.6.6.tar.gz", hash = "sha256:0c09827d26fffda27f1be2fed7a7a01a29c5ddcd2eb6393ad5ebf9d77e9deae8"},
 ]
 
 [package.dependencies]
@@ -1348,7 +1348,10 @@ files = [
 ]
 
 [package.dependencies]
-numpy = {version = ">=1.26.0", markers = "python_version >= \"3.12\""}
+numpy = [
+    {version = ">=1.23.2", markers = "python_version == \"3.11\""},
+    {version = ">=1.26.0", markers = "python_version >= \"3.12\""},
+]
 python-dateutil = ">=2.8.2"
 pytz = ">=2020.1"
 tzdata = ">=2022.7"
@@ -1644,13 +1647,13 @@ typing-extensions = ">=4.6.0,<4.7.0 || >4.7.0"
 
 [[package]]
 name = "pydeck"
-version = "0.9.0"
+version = "0.9.1"
 description = "Widget for deck.gl maps"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "pydeck-0.9.0-py2.py3-none-any.whl", hash = "sha256:0ab6e657210919fed2992cfad20afb4135d67ab6d8374f0b06fcc82b4e77b055"},
-    {file = "pydeck-0.9.0.tar.gz", hash = "sha256:fd8b75f61ca0d4712d32b4e073440f1cb74f2e0c16a0b57e57a00e65c563cc54"},
+    {file = "pydeck-0.9.1-py2.py3-none-any.whl", hash = "sha256:b3f75ba0d273fc917094fa61224f3f6076ca8752b93d46faf3bcfd9f9d59b038"},
+    {file = "pydeck-0.9.1.tar.gz", hash = "sha256:f74475ae637951d63f2ee58326757f8d4f9cd9f2a457cf42950715003e2cb605"},
 ]
 
 [package.dependencies]
@@ -2769,5 +2772,5 @@ multidict = ">=4.0"
 
 [metadata]
 lock-version = "2.0"
-python-versions = "^3.12"
-content-hash = "81b93536a464167173dd11fc016ca53b65715f984a08f3988fbd085452e0aa38"
+python-versions = "^3.11"
+content-hash = "948670afe695707925d51af06dc617c5187ddfeb3a6f4585e121ccff246640e3"
