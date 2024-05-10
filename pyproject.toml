@@ -6,7 +6,7 @@ authors = ["Volker Janz <volker@janz.sh>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.12"
+python = "^3.11"
 replicate = "^0.25.2"
 streamlit = "^1.34.0"
 langchain = "^0.1.19"
