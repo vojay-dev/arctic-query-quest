@@ -1,0 +1,42 @@
+button[title="View fullscreen"] {
+    visibility: hidden;
+}
+
+.arctic {
+    background: radial-gradient(circle, #298aa8, #8c9fa8, #f0f0f0);
+    background-clip: text;
+    color: transparent;
+    animation: arctic 5s linear infinite;
+    background-size: 200% 200%;
+}
+
+@keyframes arctic {
+    0%{
+        background-position: 0% 0%;
+    }
+    50%{
+        background-position: 100% 100%;
+    }
+    100%{
+        background-position: 0% 0%;
+    }
+}
+
+.stChatMessage {
+    background: linear-gradient(163deg, #2e99bb5c, #0f445b33);
+    border: 1px solid #298AA8;
+    border-radius: 5px;
+    padding: 10px;
+    margin: 4px;
+}
+
+.stRadio {
+    padding: 10px;
+    background-size: cover !important;
+    background-position: center !important;
+    border-radius: 10px;
+}
+
+code {
+    color: rgb(50 252 255) !important;
+}
