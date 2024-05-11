@@ -81,7 +81,7 @@ def quiz():
                         "top_k": 50,
                         "top_p": 0.8,
                         "temperature": 0.5,
-                        "max_new_tokens": 2048,
+                        "max_new_tokens": 3072,
                         "stop_sequences": "<|im_end|>",
                         "prompt_template": "<|im_start|>system\nYou're a helpful assistant<|im_end|>\n<|im_start|>user\n{prompt}<|im_end|>\n\n<|im_start|>assistant\n",
                         "presence_penalty": 1.15,
@@ -103,8 +103,8 @@ def quiz():
                 generated_quiz = json.loads(output)
             except Exception as e:
                 st.markdown(f"An error occurred: {e}")
-                st.markdown(f"Model output: {output}")
-                raise e
+                st.divider()
+                st.markdown("Don't Worry, Be Happy - reload the page and try again!")
 
         if generated_quiz:
             st.markdown("## :speech_balloon: Question")
@@ -138,6 +138,10 @@ def evaluate():
         if user_answer == correct_answer:
             st.success(f"Answer {user_answer} is correct 🎉")
             st.balloons()
+
+            difficulty = st.session_state.difficulty
+            points = 1 if difficulty == "Easy" else 2 if difficulty == "Medium" else 3
+            st.session_state.score += points
         else:
             st.warning(f"Answer {user_answer} is wrong 😢")
 

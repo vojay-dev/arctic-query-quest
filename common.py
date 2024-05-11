@@ -26,6 +26,8 @@ def configure():
 
 
 def init_state():
+    if "score" not in st.session_state:
+        st.session_state.score = 0
     if "app_state" not in st.session_state:
         st.session_state.app_state = AppState.START
     if "db_model" not in st.session_state:
@@ -42,6 +44,12 @@ def menu():
     with st.sidebar:
         st.image("images/logo.png", use_column_width=True)
 
+        st.markdown(f"""
+        Your score: `{st.session_state.score}`\n
+        - Easy: `1 point`
+        - Medium: `2 points`
+        - Hard: `3 points`
+        """)
         st.divider()
         st.markdown("### 🚀 Social")
         st.page_link("https://www.linkedin.com/in/vjanz/", label="LinkedIn")
