@@ -2,6 +2,19 @@ button[title="View fullscreen"] {
     visibility: hidden;
 }
 
+.stMarkdown a {
+    color: #ffffff !important;
+    background-image: linear-gradient(transparent 50%, #298aa8 50%);
+    background-size: auto 175%;
+    transition: background .3s ease-in-out;
+    text-decoration: none !important;
+    font-weight: 600;
+}
+
+.stMarkdown a:hover {
+    background-position-y: 100%;
+}
+
 .arctic {
     background: radial-gradient(circle, #298aa8, #8c9fa8, #f0f0f0);
     background-clip: text;
@@ -11,13 +24,13 @@ button[title="View fullscreen"] {
 }
 
 @keyframes arctic {
-    0%{
+    0% {
         background-position: 0% 0%;
     }
-    50%{
+    50% {
         background-position: 100% 100%;
     }
-    100%{
+    100% {
         background-position: 0% 0%;
     }
 }
@@ -34,6 +47,12 @@ button[title="View fullscreen"] {
     padding: 10px;
     background-size: cover !important;
     background-position: center !important;
+    border-radius: 10px;
+}
+
+.stSlider {
+    padding: 10px;
+    background-color: #1e1e1e;
     border-radius: 10px;
 }
 

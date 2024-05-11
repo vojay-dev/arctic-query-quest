@@ -1,14 +1,14 @@
 import json
-from pathlib import Path
 
 import streamlit as st
 from langchain_community.llms.replicate import Replicate
-from langchain_core.prompts import PromptTemplate
 
-from common import AppState, init_page, load_model
+from common import AppState, init_page, load_model, read
+from prompt import PromptGenerator, get_difficulty_by_name
+
+prompt_generator: PromptGenerator = PromptGenerator()
 
 init_page()
-
 placeholder = st.empty()
 
 
@@ -25,10 +25,7 @@ def start():
         col1, col2 = st.columns(2)
 
         with col1:
-            st.markdown("""
-                Welcome to the Arctic Query Quest! This is a fun and interactive way to learn SQL powered by the Snowflake Arctic
-                model family.
-            """)
+            st.markdown(read("intro.md"))
 
         with col2:
             db_model = st.radio(
@@ -78,15 +75,13 @@ def quiz():
         generated_quiz = None
         with st.spinner("Exploring the Arctic for you..."):
             try:
-                prompt_template = PromptTemplate.from_file(template_file=Path("prompt.jinja"), template_format="jinja2")
-
                 llm = Replicate(
                     model="snowflake/snowflake-arctic-instruct",
                     model_kwargs={
                         "top_k": 50,
                         "top_p": 0.8,
                         "temperature": 0.5,
-                        "max_new_tokens": 1024,
+                        "max_new_tokens": 2048,
                         "stop_sequences": "<|im_end|>",
                         "prompt_template": "<|im_start|>system\nYou're a helpful assistant<|im_end|>\n<|im_start|>user\n{prompt}<|im_end|>\n\n<|im_start|>assistant\n",
                         "presence_penalty": 1.15,
@@ -96,7 +91,12 @@ def quiz():
 
                 chunks = []
 
-                for chunk in llm.stream(prompt_template.format(model=model, difficulty=st.session_state.difficulty)):
+                prompt = prompt_generator.generate_prompt(
+                    model=model,
+                    difficulty=get_difficulty_by_name(st.session_state.difficulty),
+                )
+
+                for chunk in llm.stream(prompt):
                     chunks.append(chunk)
 
                 output = "".join(chunks)
@@ -140,8 +140,8 @@ def evaluate():
         else:
             st.warning(f"Answer {user_answer} is wrong 😢")
 
-        st.markdown(f"The correct answer is: {generated_quiz['answer_' + str(correct_answer)]}")
-        st.markdown(f"Because: {generated_quiz['explanation']}")
+        st.markdown(f"**The correct answer is**: {generated_quiz['answer_' + str(correct_answer)]}")
+        st.markdown(f"**Because**: {generated_quiz['explanation']}")
         st.divider()
         st.button("Back to start!", on_click=set_state, args=(AppState.START,))
 

@@ -10,6 +10,10 @@ class AppState(Enum):
     EVALUATE = "evaluate"
 
 
+def read(path: str) -> str:
+    return Path(path).read_text()
+
+
 def apply_style():
     st.html(f"<style>{Path('style.css').read_text()}</style>")
 
@@ -56,13 +60,13 @@ def init_page():
     menu()
 
 
-def load_model():
+def load_model() -> str:
     model = st.session_state.db_model
     if model and model == "Shop":
-        return Path("models/shop.sql").read_text()
+        return read("models/shop.sql")
     elif model and model == "Game":
-        return Path("models/game.sql").read_text()
+        return read("models/game.sql")
     elif model and model == "Books":
-        return Path("models/books.sql").read_text()
+        return read("models/books.sql")
     else:
-        return Path("models/shop.sql").read_text()
+        return read("models/shop.sql")
