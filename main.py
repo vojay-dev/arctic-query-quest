@@ -32,7 +32,7 @@ def start():
 
         with col2:
             db_model = st.radio(
-                "Choose your destiny",
+                ":book: Choose a database model to explore:",
                 ["Shop", "Game", "Books"],
                 captions=["Database model for a shop", "Database model for an online game", "Database model about books"]
             )
@@ -44,6 +44,12 @@ def start():
                 st.html("<style>.stRadio { background: url(https://files.janz.sh/arctic/model-game.jpg); }</style>")
             elif st.session_state.db_model == "Books":
                 st.html("<style>.stRadio { background: url(https://files.janz.sh/arctic/model-books.jpg); }</style>")
+
+            difficulty = st.select_slider(
+                label=":star: Select difficulty level:",
+                options=["Easy", "Medium", "Hard"]
+            )
+            st.session_state.difficulty = difficulty
 
         model = load_model()
         with st.expander(f"Open to see selected database model (`{st.session_state.db_model}`)..."):
@@ -81,7 +87,6 @@ def quiz():
                         "top_p": 0.8,
                         "temperature": 0.5,
                         "max_new_tokens": 1024,
-                        "min_new_tokens": 0,
                         "stop_sequences": "<|im_end|>",
                         "prompt_template": "<|im_start|>system\nYou're a helpful assistant<|im_end|>\n<|im_start|>user\n{prompt}<|im_end|>\n\n<|im_start|>assistant\n",
                         "presence_penalty": 1.15,
@@ -89,10 +94,16 @@ def quiz():
                     }
                 )
 
-                output = llm.invoke(prompt_template.format(model=model))
+                chunks = []
+
+                for chunk in llm.stream(prompt_template.format(model=model, difficulty=st.session_state.difficulty)):
+                    chunks.append(chunk)
+
+                output = "".join(chunks)
                 generated_quiz = json.loads(output)
             except Exception as e:
                 st.markdown(f"An error occurred: {e}")
+                st.markdown(f"Model output: {output}")
                 raise e
 
         if generated_quiz:
@@ -125,6 +136,7 @@ def evaluate():
 
         if user_answer == correct_answer:
             st.success(f"Answer {user_answer} is correct 🎉")
+            st.balloons()
         else:
             st.warning(f"Answer {user_answer} is wrong 😢")
 

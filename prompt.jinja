@@ -1,19 +1,25 @@
 You are a SQL expert interviewing a candidate for a position. Consider the following SQL schema and sample data using the PostgreSQL dialect:
 ```
-{{model}}
+{{ model }}
 ```
 
 Generate a random SQL related quiz question based on this model together with 3 possible answers, whereas only one of them is correct and the other ones are wrong.
 
 The question must be about SQL by using the model as example, not about the data itself.
 
-Ensure to make it not too obvious to challenge the candidate.
+The difficulty of the question is defined as follows:
+
+- Easy: The question must be about a simple SQL concept like a basic query, a simple join, or a basic aggregation.
+- Medium: The question must be about a more complex SQL concept like a self-join, a subquery, or a window function.
+- Hard: The question must be about a complex SQL concept like a recursive CTE, a complex window function, or a complex join.
+
+Your question must be of the following difficulty: {{ difficulty }}
 
 Your reply must contain an explanation of the correct answer as well, to ensure knowledge sharing with the candidate.
 
-The text in your reply can use Markdown formatting for SQL code, table names, column names, etc.
+The text in your reply must use Markdown formatting. Ensure to wrap all SQL code, table names, column names, etc. in backticks so that they are displayed as code.
 
-Your reply must be in JSON format following this template strictly:
+Your reply must be in valid JSON format following this template strictly:
 ```
 {% raw %}
 {

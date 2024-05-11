@@ -30,6 +30,8 @@ def init_state():
         st.session_state.generated_quiz = None
     if "user_answer" not in st.session_state:
         st.session_state.user_answer = None
+    if "difficulty" not in st.session_state:
+        st.session_state.difficulty = None
 
 
 def menu():
