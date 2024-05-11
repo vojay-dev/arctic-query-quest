@@ -26,6 +26,8 @@ def start():
 
         with col1:
             st.markdown(read("intro.md"))
+            with st.expander(f"Open to see a system overview..."):
+                st.image("images/overview.png", use_column_width=True)
 
         with col2:
             db_model = st.radio(
@@ -48,6 +50,7 @@ def start():
             )
             st.session_state.difficulty = difficulty
 
+        st.divider()
         model = load_model()
         with st.expander(f"Open to see selected database model (`{st.session_state.db_model}`)..."):
             st.code(model, language="sql")

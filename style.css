@@ -49,6 +49,7 @@ button[title="View fullscreen"] {
 
 .stRadio {
     padding: 10px;
+    background-color: #1e1e1e;
     background-size: cover !important;
     background-position: center !important;
     border-radius: 10px;
