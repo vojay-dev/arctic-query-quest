@@ -2,6 +2,10 @@ button[title="View fullscreen"] {
     visibility: hidden;
 }
 
+[data-testid^="chatAvatarIcon"] {
+    background-color: #32fcff !important;
+}
+
 .stMarkdown a {
     color: #ffffff !important;
     background-image: linear-gradient(transparent 50%, #298aa8 50%);
@@ -16,7 +20,7 @@ button[title="View fullscreen"] {
 }
 
 .arctic {
-    background: radial-gradient(circle, #298aa8, #8c9fa8, #f0f0f0);
+    background: radial-gradient(circle, #32fcff, #8c9fa8, #f0f0f0);
     background-clip: text;
     color: transparent;
     animation: arctic 5s linear infinite;
@@ -37,7 +41,7 @@ button[title="View fullscreen"] {
 
 .stChatMessage {
     background: linear-gradient(163deg, #2e99bb5c, #0f445b33);
-    border: 1px solid #298AA8;
+    border: 1px solid #32fcff;
     border-radius: 5px;
     padding: 10px;
     margin: 4px;
@@ -58,4 +62,8 @@ button[title="View fullscreen"] {
 
 code {
     color: rgb(50 252 255) !important;
+}
+
+button {
+    padding: 15px !important;
 }

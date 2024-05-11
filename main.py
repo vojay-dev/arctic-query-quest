@@ -51,7 +51,7 @@ def start():
         model = load_model()
         with st.expander(f"Open to see selected database model (`{st.session_state.db_model}`)..."):
             st.code(model, language="sql")
-        st.button("Start the Quest!", on_click=set_state, args=(AppState.QUIZ,))
+        st.button(":video_game: Start the Quest!", on_click=set_state, args=(AppState.QUIZ,))
 
 
 def answer(generated_quiz, user_answer):
@@ -65,7 +65,7 @@ def quiz():
         st.html("<h1 class='arctic'>🏔️ Arctic Query Quest</h1>")
         st.divider()
 
-        st.markdown("## Model")
+        st.markdown("## :books: Model")
         model = load_model()
         with st.expander("Open to see database model..."):
             st.code(model, language="sql")
@@ -107,22 +107,23 @@ def quiz():
                 raise e
 
         if generated_quiz:
-            st.markdown("## Question")
+            st.markdown("## :speech_balloon: Question")
             with st.chat_message("assistant"):
                 st.markdown(generated_quiz["question"])
-            st.markdown("## Answers")
+            st.markdown("## :bulb: Answers")
             with st.chat_message("assistant"):
                 st.markdown(f"1) {generated_quiz['answer_1']}")
                 st.markdown(f"2) {generated_quiz['answer_2']}")
                 st.markdown(f"3) {generated_quiz['answer_3']}")
 
+            st.markdown("Choose wisely:")
             col1, col2, col3 = st.columns(3)
             with col1:
-                st.button("1", on_click=answer, args=(generated_quiz, 1,), use_container_width=True)
+                st.button(":one:", on_click=answer, args=(generated_quiz, 1,), use_container_width=True)
             with col2:
-                st.button("2", on_click=answer, args=(generated_quiz, 2,), use_container_width=True)
+                st.button(":two:", on_click=answer, args=(generated_quiz, 2,), use_container_width=True)
             with col3:
-                st.button("3", on_click=answer, args=(generated_quiz, 3,), use_container_width=True)
+                st.button(":three:", on_click=answer, args=(generated_quiz, 3,), use_container_width=True)
 
 
 def evaluate():
@@ -143,7 +144,7 @@ def evaluate():
         st.markdown(f"**The correct answer is**: {generated_quiz['answer_' + str(correct_answer)]}")
         st.markdown(f"**Because**: {generated_quiz['explanation']}")
         st.divider()
-        st.button("Back to start!", on_click=set_state, args=(AppState.START,))
+        st.button(":arrow_left: Back to start!", on_click=set_state, args=(AppState.START,))
 
 
 if st.session_state.app_state == AppState.START:
