@@ -1,18 +1,17 @@
-import json
-
 import streamlit as st
-from langchain_community.llms.replicate import Replicate
 
+from arctic import ArcticClient, ArcticQuiz
 from common import AppState, init_page, load_model, read
 from prompt import PromptGenerator, get_difficulty_by_name
 
 prompt_generator: PromptGenerator = PromptGenerator()
+arctic_client: ArcticClient = ArcticClient()
 
 init_page()
 placeholder = st.empty()
 
 
-def set_state(state):
+def set_state(state: AppState):
     placeholder.empty()
     st.session_state.app_state = state
 
@@ -37,12 +36,15 @@ def start():
             )
 
             st.session_state.db_model = db_model
-            if st.session_state.db_model == "Shop":
-                st.html("<style>.stRadio { background: url(https://files.janz.sh/arctic/model-shop.jpg); }</style>")
-            elif st.session_state.db_model == "Game":
-                st.html("<style>.stRadio { background: url(https://files.janz.sh/arctic/model-game.jpg); }</style>")
-            elif st.session_state.db_model == "Books":
-                st.html("<style>.stRadio { background: url(https://files.janz.sh/arctic/model-books.jpg); }</style>")
+
+            model_backgrounds = {
+                "Shop": "https://files.janz.sh/arctic/model-shop.jpg",
+                "Game": "https://files.janz.sh/arctic/model-game.jpg",
+                "Books": "https://files.janz.sh/arctic/model-books.jpg"
+            }
+
+            if background := model_backgrounds.get(db_model, ""):
+                st.html(f"<style>.stRadio {{ background: url({background}); }}</style>")
 
             difficulty = st.select_slider(
                 label=":star: Select difficulty level:",
@@ -57,7 +59,7 @@ def start():
         st.button(":video_game: Start the Quest!", on_click=set_state, args=(AppState.QUIZ,))
 
 
-def answer(generated_quiz, user_answer):
+def answer(generated_quiz: ArcticQuiz, user_answer: int):
     st.session_state.generated_quiz = generated_quiz
     st.session_state.user_answer = user_answer
     set_state(AppState.EVALUATE)
@@ -75,35 +77,15 @@ def quiz():
 
         st.divider()
 
-        generated_quiz = None
+        generated_quiz: ArcticQuiz | None = None
         with st.spinner("Exploring the Arctic for you..."):
             try:
-                llm = Replicate(
-                    model="snowflake/snowflake-arctic-instruct",
-                    model_kwargs={
-                        "top_k": 50,
-                        "top_p": 0.8,
-                        "temperature": 0.5,
-                        "max_new_tokens": 3072,
-                        "stop_sequences": "<|im_end|>",
-                        "prompt_template": "<|im_start|>system\nYou're a helpful assistant<|im_end|>\n<|im_start|>user\n{prompt}<|im_end|>\n\n<|im_start|>assistant\n",
-                        "presence_penalty": 1.15,
-                        "frequency_penalty": 0.2
-                    }
-                )
-
-                chunks = []
-
                 prompt = prompt_generator.generate_prompt(
                     model=model,
                     difficulty=get_difficulty_by_name(st.session_state.difficulty),
                 )
 
-                for chunk in llm.stream(prompt):
-                    chunks.append(chunk)
-
-                output = "".join(chunks)
-                generated_quiz = json.loads(output)
+                generated_quiz = arctic_client.invoke(prompt)
             except Exception as e:
                 st.markdown(f"An error occurred: {e}")
                 st.divider()
@@ -112,12 +94,12 @@ def quiz():
         if generated_quiz:
             st.markdown("## :speech_balloon: Question")
             with st.chat_message("assistant"):
-                st.markdown(generated_quiz["question"])
+                st.markdown(generated_quiz.question)
             st.markdown("## :bulb: Answers")
             with st.chat_message("assistant"):
-                st.markdown(f"1) {generated_quiz['answer_1']}")
-                st.markdown(f"2) {generated_quiz['answer_2']}")
-                st.markdown(f"3) {generated_quiz['answer_3']}")
+                st.markdown(f"1) {generated_quiz.answer_1}")
+                st.markdown(f"2) {generated_quiz.answer_2}")
+                st.markdown(f"3) {generated_quiz.answer_3}")
 
             st.markdown("Choose wisely:")
             col1, col2, col3 = st.columns(3)
@@ -131,9 +113,9 @@ def quiz():
 
 def evaluate():
     with placeholder.container():
-        generated_quiz = st.session_state.generated_quiz
+        generated_quiz: ArcticQuiz = st.session_state.generated_quiz
         user_answer = st.session_state.user_answer
-        correct_answer = generated_quiz["correct_answer"]
+        correct_answer = generated_quiz.correct_answer
 
         st.html("<h1 class='arctic'>🏔️ Arctic Query Quest</h1>")
         st.divider()
@@ -148,15 +130,17 @@ def evaluate():
         else:
             st.warning(f"Answer {user_answer} is wrong 😢")
 
-        st.markdown(f"**The correct answer is**: {generated_quiz['answer_' + str(correct_answer)]}")
-        st.markdown(f"**Because**: {generated_quiz['explanation']}")
+        correct_answer_text = getattr(generated_quiz, f"answer_{correct_answer}")
+        st.markdown(f"**The correct answer is**: {correct_answer_text}")
+        st.markdown(f"**Because**: {generated_quiz.explanation}")
         st.divider()
         st.button(":arrow_left: Back to start!", on_click=set_state, args=(AppState.START,))
 
 
-if st.session_state.app_state == AppState.START:
-    start()
-elif st.session_state.app_state == AppState.QUIZ:
-    quiz()
-elif st.session_state.app_state == AppState.EVALUATE:
-    evaluate()
+if __name__ == '__main__':
+    if st.session_state.app_state == AppState.START:
+        start()
+    elif st.session_state.app_state == AppState.QUIZ:
+        quiz()
+    elif st.session_state.app_state == AppState.EVALUATE:
+        evaluate()

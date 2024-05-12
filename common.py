@@ -21,9 +21,6 @@ def apply_style():
 def configure():
     st.set_page_config(layout="wide")
 
-    if "app_state" not in st.session_state:
-        st.session_state.app_state = AppState.START
-
 
 def init_state():
     if "score" not in st.session_state:

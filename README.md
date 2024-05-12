@@ -39,9 +39,207 @@ the application.
 
 ## What it does
 
+Arctic Query Quest is a fun and interactive way to learn SQL and get familiar with data models. The user can choose
+a data model and a difficulty. Then, a prompt is generated out of several moduls based on the user configuration.
+
+The Snowflake Arctic Instruct model is used to create a quiz using the generated prompt.
+
+The user is then presented with the quiz question and three possible answers, all part of the model response. The user
+can make a guess, the app will evaluate the answer and provide an explanation of the correct answer.
+
 ## How I built it
 
+**Tech Stack 🚀**
+
+- Python 3.11
+- [Streamlit](https://streamlit.io/) for developing and deploying the web app
+- [Pydantic](https://docs.pydantic.dev/latest/) for data modeling and validation
+- [Jinja](https://jinja.palletsprojects.com/) templating for modular prompt generation
+- [LangChain](https://www.langchain.com/) for LLM interaction and prompt generation
+- [Poetry](https://python-poetry.org/) for dependency management
+- [Replicate](https://replicate.com/) for running predictions with the Snowflake Arctic model
+- [Snowflake Arctic Instruct](https://www.snowflake.com/en/data-cloud/arctic/) as the base LLM for any predictions
+
 ![System Overview](images/overview.png)
+
+### Streamlit web app
+
+#### State management
+
+The Streamlit web app is the main interface for the user. To increase the look and feel of the app, it is not using
+multiple pages but a single page with different states. This allows for more complex flows.
+
+The current state is stored in the session state as `st.session_state.app_state`. The app has the following states:
+
+- `start`: The initial state of the app. The user can configure the session, choose a data model and difficulty and start the quiz.
+- `quiz`: At this state, the app is interacting with the Arctic model to generate a quiz, including the answers and an explanation of the correct answer. The user is presented with the quiz and can make a guess.
+- `evaluate`: Here, the users answer is evaluated and the result is shown.
+
+The state is represented as an `enum` for more type safety:
+
+```py
+class AppState(Enum):
+    START = "start"
+    QUIZ = "quiz"
+    EVALUATE = "evaluate"
+```
+
+To handle the rendering of the app, all elements are added to an `st.empty()` element called `placeholder`. This allows
+to remove elements at any point, or replace several elements at once. In this case it is used to replace all content
+when the state changes. That way, the app is implementing a more complex user flow while handling everything with a
+single page approach.
+
+With the following helper function, the state is changed easily and also takes care of removing the current content:
+
+```py
+def set_state(state: AppState):
+    placeholder.empty()
+    st.session_state.app_state = state
+```
+
+To render the content, each state has its own function. Then main function then simply calls the function based
+on the current state:
+
+```py
+if __name__ == '__main__':
+    if st.session_state.app_state == AppState.START:
+        start()
+    elif st.session_state.app_state == AppState.QUIZ:
+        quiz()
+    elif st.session_state.app_state == AppState.EVALUATE:
+        evaluate()
+```
+
+#### Configuration and customization
+
+Visual appeal was an important aspect for the implementation of the app. The goal was to make it stand out and use
+an overall theme that fits the Arctic theme. To handle this customization and to keep configuration related code
+separate from the main logic, a `common.py` file was created.
+
+When rendering the app, the `init_page()` function is called, which covers the following aspects:
+
+```py
+def init_page():
+    configure()
+    init_state()
+    apply_style()
+    menu()
+```
+
+- `configure`: Set page configurations like the layout, which is set to `wide` in this case.
+- `init_state`: Initialize the session state by ensuring all state variables are set and use a proper default, such as `app_state`.
+- `apply_style`: Reads the file `style.css` and applies this CSS via `st.html("<style>...</style>")`. This keeps CSS separate from the Python code and allows for more complex styling adjustments.
+- `menu`: Renders the sidebar.
+
+By keeping the configuration and customization separate, the main logic is more focused and easier to maintain.
+
+Additionally, there are some more special adjustments which I would like to highlight:
+
+**Custom Theme**
+
+The app uses a custom theme defined in the `.streamlit/config.toml` file. This sets a color scheme that fits the Arctic theme.
+
+```toml
+[theme]
+base="dark"
+primaryColor="#32fcff"
+backgroundColor="#23232b"
+secondaryBackgroundColor="#383844"
+```
+
+**CSS**
+
+Via some advanced CSS selectors, also elements which normally can't be styled in Streamlit can be adjusted, for example:
+
+```css
+[data-testid^="chatAvatarIcon"] {
+    background-color: #32fcff !important;
+}
+```
+
+**Component Customization**
+
+To improve the look and feel, some components have been customized. For example, the `st.radio()` components has been
+extended with a background image depending on the selected model:
+
+```py
+model_backgrounds = {
+    "Shop": "https://files.janz.sh/arctic/model-shop.jpg",
+    "Game": "https://files.janz.sh/arctic/model-game.jpg",
+    "Books": "https://files.janz.sh/arctic/model-books.jpg"
+}
+
+if background := model_backgrounds.get(db_model, ""):
+    st.html(f"<style>.stRadio {{ background: url({background}); }}</style>")
+```
+
+### LLM interaction
+
+The interaction is decoupled and modularized with [LangChain](https://www.langchain.com/). This allows to easily switch
+between different models.
+
+Furthermore, all model interaction is handled in a separate class called `ArcticClient`. By using [Pydantic](https://docs.pydantic.dev/latest/),
+the model response is parsed and validated to a data class:
+
+```py
+class ArcticQuiz(BaseModel):
+    question: str
+    answer_1: str
+    answer_2: str
+    answer_3: str
+    correct_answer: int
+    explanation: str
+
+# ...
+
+    def invoke(self, prompt: str) -> ArcticQuiz:
+        chunks = []
+        for chunk in self.llm.stream(prompt):
+            chunks.append(chunk)
+
+        output = "".join(chunks)
+        return ArcticQuiz.parse_obj(json.loads(output))
+```
+
+With this, the Streamlit app code is kept clean, but also it ensures that the model response is only further used when
+it is valid. In theory, this can be extended with more specific validation rules using [Pydantic](https://docs.pydantic.dev/latest/).
+
+### Prompt generation
+
+The prompt generation is a key aspect of the app. It is modularized and allows for easy adjustments. All logic is covered
+in the `PromptGenerator` class.
+
+The Prompt Generator combines and renders Jinja template files to create a modular prompt.
+
+Jinja is a template engine for Python. Jinja facilitates the creation of dynamic content across various domains. It
+separates logic from presentation, allowing for clean and maintainable codebases.
+
+It uses the following core concepts:
+
+* **Templates**: Text files containing content specific to the use case (e.g., HTML, configuration files, SQL queries).
+* **Environment**: Manages template configuration (e.g., delimiters, autoescaping).
+* **Variables**: Inserted into templates using double curly braces (`{{ variable }}`).
+* **Blocks**: Defined with `{% ... %}` tags for control flow (e.g., loops, conditionals).
+* **Comments**: Enclosed in `{# ... #}` for code readability.
+
+Even though Jinja is often used in web development, since it enables the creation of dynamic content, it is also used
+for other cases like Airflow.
+
+In this project, it is used to define templates to make the prompt generation modular. That way, our Python code is kept
+clean and we have a modular solution that can easily be extended.
+
+LangChain is used to render the templates. That would allow to replace Jinja with another templating engine if needed.
+
+For this project, there is a base template `prompt.jinja` which holds various variables which are replaced with the
+data model, samples and others.
+
+Depending on the selection of the user, another template for the difficulty of the quiz (e.g. `easy.jinja`) is rendered
+and integrated into the base template.
+
+### Data models
+
+The data models are separated in the `models/` directory. Even though there are pre-defined scenarios for the current
+application, it is easy to extend the app with new models.
 
 ## Challenges I ran into
 
