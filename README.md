@@ -47,6 +47,8 @@ The Snowflake Arctic Instruct model is used to create a quiz using the generated
 The user is then presented with the quiz question and three possible answers, all part of the model response. The user
 can make a guess, the app will evaluate the answer and provide an explanation of the correct answer.
 
+![Arctic Query Quest Screenshot](images/screenshot.png)
+
 ## ⚙️ How I built it
 
 **Tech Stack 🚀**
@@ -271,3 +273,5 @@ But most important:
 > I hope to encourage the development on educational games and knowledge sharing apps. I think it is
 crucial to not only focus on getting a specific answer from a model but to enable users to learn and understand the
 underlying concepts, like getting familiar with a data model.
+
+![Arctic Query Quest](images/banner.jpg)
