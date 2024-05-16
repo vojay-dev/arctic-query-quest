@@ -3,15 +3,15 @@ from pathlib import Path
 
 from langchain_core.prompts import PromptTemplate
 
-BASE_PATH = 'templates'
-MAIN_TEMPLATE = 'prompt.jinja'
-DIFFICULTY_PATH = 'difficulty'
+BASE_PATH = "templates"
+MAIN_TEMPLATE = "prompt.jinja"
+DIFFICULTY_PATH = "difficulty"
 
 
 class Difficulty(StrEnum):
-    EASY = 'easy.jinja'
-    MEDIUM = 'medium.jinja'
-    HARD = 'hard.jinja'
+    EASY = "easy.jinja"
+    MEDIUM = "medium.jinja"
+    HARD = "hard.jinja"
 
 
 def get_difficulty_by_name(name: str) -> Difficulty:
