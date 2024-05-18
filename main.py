@@ -90,14 +90,11 @@ def quiz():
 
         generated_quiz: ArcticQuiz | None = None
 
-        progress_text = "Operation in progress. Please wait."
-        progress_bar = st.progress(0, text=progress_text)
-
-        progress_bar.progress(0, text="Exploring the Arctic for you...")
+        progress_bar = st.progress(0, text="Exploring the Arctic for you 🏔️...")
         time.sleep(2)
 
         try:
-            progress_bar.progress(20, text="Generating a quiz for you...")
+            progress_bar.progress(20, text="Generating a quiz for you 🤖...")
             prompt = prompt_generator.generate_prompt(
                 model=model,
                 difficulty=get_difficulty_by_name(st.session_state.difficulty),
@@ -105,7 +102,7 @@ def quiz():
 
             generated_quiz = arctic_client.invoke(prompt)
 
-            progress_bar.progress(60, text="Generating speech...")
+            progress_bar.progress(60, text="Generating speech 💬...")
             speech_question = tts_client.synthesize(generated_quiz.question)
 
             progress_bar.progress(100, text="Get ready for the Arctic Query Quiz 🏔️...")

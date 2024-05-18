@@ -6,6 +6,14 @@ button[title="View fullscreen"] {
     background-color: #32fcff !important;
 }
 
+[data-testid^="stSidebarUserContent"] {
+    padding: 2rem 1.5rem; !important;
+}
+
+[data-testid^="stVerticalBlock"] {
+    gap: 0.4rem; !important;
+}
+
 .stMarkdown a {
     color: #ffffff !important;
     background-image: linear-gradient(transparent 50%, #298aa8 50%);
