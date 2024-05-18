@@ -11,7 +11,7 @@ button[title="View fullscreen"] {
 }
 
 [data-testid^="stVerticalBlock"] {
-    gap: 0.4rem; !important;
+    gap: 1rem; !important;
 }
 
 .stMarkdown a {

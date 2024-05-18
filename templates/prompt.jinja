@@ -13,15 +13,15 @@ The difficulty of the question is defined as follows:
 
 {{ difficulty }}
 
-Your reply must contain an explanation of the correct answer as well, to ensure knowledge sharing with the candidate.
+Your reply must contain an explanation of the correct answer as well, to ensure knowledge sharing with the user.
 
-The text in your reply must use Markdown formatting. Ensure to wrap all SQL code, table names, column names, etc. in backticks so that they are displayed as code.
+The text in your question, answers and explanation must use Markdown formatting. Ensure to wrap ALL SQL code, table names, column names, etc. in backticks (`), so that they are displayed as code.
 
-Your reply must be in valid JSON format following this template strictly:
+Your reply MUST be using valid JSON format and ONLY contain the JSON object following this template strictly:
 ```
 {% raw %}
 {
-    "question": "<question to the candidate>",
+    "question": "<question to the user>",
     "answer_1": "<first answer>",
     "answer_2": "<second answer>",
     "answer_3": "<third answer>",

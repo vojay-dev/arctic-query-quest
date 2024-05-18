@@ -1,4 +1,5 @@
 import json
+import re
 from functools import wraps
 from time import sleep
 import logging
@@ -50,11 +51,12 @@ class ArcticClient:
 
     def __init__(
             self,
-            top_k: int = 50,
+            top_k: int = 60,
             top_p: float = 1.0,
             temperature: float = 0.85,
-            max_new_tokens: int = 3072,
-            presence_penalty: float = 1.15,
+            min_new_tokens: int = 0,
+            max_new_tokens: int = 4000,
+            presence_penalty: float = 1,
             frequency_penalty: float = 0.2
     ):
         self.llm = Replicate(
@@ -63,6 +65,7 @@ class ArcticClient:
                 "top_k": top_k,
                 "top_p": top_p,
                 "temperature": temperature,
+                "min_new_tokens": min_new_tokens,
                 "max_new_tokens": max_new_tokens,
                 "stop_sequences": STOP_SEQUENCE,
                 "prompt_template": PROMPT_TEMPLATE,
@@ -71,6 +74,15 @@ class ArcticClient:
             }
         )
 
+    @staticmethod
+    def _extract_json(text: str) -> str:
+        regex = r"^.*(\{.+\}).*$"
+        matches = re.search(regex, text, re.MULTILINE | re.DOTALL)
+        if not matches or len(matches.groups()) != 1:
+            raise ValueError(f"text contains none or too many JSON objects: {text}")
+
+        return matches.group(0)
+
     @retry(max_retries=8)
     def invoke(self, prompt: str) -> ArcticQuiz:
         chunks = []
@@ -78,4 +90,5 @@ class ArcticClient:
             chunks.append(chunk)
 
         output = "".join(chunks)
-        return ArcticQuiz.parse_obj(json.loads(output))
+        json_text = self._extract_json(output)
+        return ArcticQuiz.parse_obj(json.loads(json_text))
