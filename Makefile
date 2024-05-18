@@ -6,7 +6,7 @@ all:
 
 .PHONY: run
 run:
-	streamlit run main.py
+	streamlit run arctic_query_quest/main.py
 
 .PHONY: test
 test:

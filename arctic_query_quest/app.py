@@ -1,11 +1,15 @@
+import logging
 import time
 
 import streamlit as st
+from streamlit_js_eval import streamlit_js_eval
 
 from arctic import ArcticClient, ArcticQuiz
 from common import AppState, load_model, read
 from prompt import PromptGenerator, get_difficulty_by_name
 from tts import SpeechClient
+
+logger = logging.getLogger(__name__)
 
 
 class ArcticQueryQuest:
@@ -25,6 +29,7 @@ class ArcticQueryQuest:
         self.placeholder = st.empty()
 
     def set_state(self, state: AppState):
+        logger.info(f"switching state to {state}")
         self.placeholder.empty()
         st.session_state.app_state = state
 
@@ -109,9 +114,11 @@ class ArcticQueryQuest:
                 time.sleep(1)
 
             except Exception as e:
+                logger.error(f"error in quiz generation: {e}")
                 st.markdown(f"An error occurred: {e}")
                 st.divider()
                 st.markdown("Don't Worry, Be Happy - reload the page and try again!")
+                st.button(":repeat: Reload", on_click=lambda: streamlit_js_eval(js_expressions="parent.window.location.reload()"))
 
             if generated_quiz:
                 st.markdown("## :speech_balloon: Question")
