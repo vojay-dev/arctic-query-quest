@@ -155,6 +155,11 @@ def evaluate():
             difficulty = st.session_state.difficulty
             points = 1 if difficulty == "Easy" else 2 if difficulty == "Medium" else 3
             st.session_state.score += points
+
+            st.toast(
+                f"You got {points} point{'s' if points > 1 else ''}. Total score: {st.session_state.score}",
+                icon="⭐️"
+            )
         else:
             st.warning(f"Answer {user_answer} is wrong 😢")
 
