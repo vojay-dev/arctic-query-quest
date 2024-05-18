@@ -6,12 +6,12 @@ all:
 
 .PHONY: run
 run:
-	streamlit run arctic_query_quest/main.py
+	poetry run streamlit run arctic_query_quest/main.py
 
 .PHONY: test
 test:
-	python -m unittest -v
+	poetry run python -m pytest tests/ -v
 
 .PHONY: ruff
 ruff:
-	ruff check --fix
+	poetry run ruff check --fix

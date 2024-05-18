@@ -4,7 +4,7 @@ import unittest
 from arctic_query_quest.arctic import ArcticClient, ArcticQuiz
 
 
-class TestGemini(unittest.TestCase):
+class TestArctic(unittest.TestCase):
 
     def test_extract_json(self):
         arctic_reply = """
