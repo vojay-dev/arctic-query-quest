@@ -3,6 +3,7 @@ import time
 
 import streamlit as st
 from streamlit_js_eval import streamlit_js_eval
+from streamlit_lottie import st_lottie
 
 from arctic import ArcticClient, ArcticQuiz
 from common import AppState, load_model, read
@@ -36,39 +37,48 @@ class ArcticQueryQuest:
     def start(self):
         with self.placeholder.container():
             st.html("<h1 class='arctic'>🏔️ Arctic Query Quest</h1>")
-            st.divider()
 
-            col1, col2 = st.columns(2)
+            tab_start, tab_about = st.tabs(["Start", "About the project"])
 
-            with col1:
-                st.markdown(read("intro.md"))
-                with st.expander("Open to see a system overview..."):
-                    st.image("images/overview.png", use_column_width=True)
+            with tab_start:
+                col1, col2 = st.columns(2)
 
-            with col2:
-                db_model = st.radio(
-                    ":book: Choose a database model to explore:",
-                    ["Shop", "Game", "Books"],
-                    captions=["Database model for a shop", "Database model for an online game",
-                              "Database model about books"]
-                )
+                with col1:
+                    db_model = st.radio(
+                        ":book: Choose a database model to explore:",
+                        ["Shop", "Game", "Books"],
+                        captions=["Database model for a shop", "Database model for an online game",
+                                  "Database model about books"]
+                    )
 
-                st.session_state.db_model = db_model
+                    st.session_state.db_model = db_model
 
-                model_backgrounds = {
-                    "Shop": "https://files.janz.sh/arctic/model-shop.jpg",
-                    "Game": "https://files.janz.sh/arctic/model-game.jpg",
-                    "Books": "https://files.janz.sh/arctic/model-books.jpg"
-                }
+                    model_backgrounds = {
+                        "Shop": "https://files.janz.sh/arctic/model-shop.jpg",
+                        "Game": "https://files.janz.sh/arctic/model-game.jpg",
+                        "Books": "https://files.janz.sh/arctic/model-books.jpg"
+                    }
 
-                if background := model_backgrounds.get(db_model, ""):
-                    st.html(f"<style>.stRadio {{ background: url({background}); }}</style>")
+                    if background := model_backgrounds.get(db_model, ""):
+                        st.html(f"<style>.stRadio {{ background: url({background}); }}</style>")
 
-                difficulty = st.select_slider(
-                    label=":star: Select difficulty level:",
-                    options=["Easy", "Medium", "Hard"]
-                )
-                st.session_state.difficulty = difficulty
+                    difficulty = st.select_slider(
+                        label=":star: Select difficulty level:",
+                        options=["Easy", "Medium", "Hard"]
+                    )
+                    st.session_state.difficulty = difficulty
+                with col2:
+                    st_lottie("https://lottie.host/fe98088d-45bc-4b23-b45c-5b9d97dfab74/h8Y01cq58s.json", width=350)
+
+            with tab_about:
+                col1, col2 = st.columns(2)
+
+                with col1:
+                    st.markdown(read("intro.md"))
+
+                with col2:
+                    with st.expander("Open to see a system overview..."):
+                        st.image("images/overview.png", use_column_width=True)
 
             st.divider()
             model = load_model()
@@ -96,6 +106,11 @@ class ArcticQueryQuest:
             generated_quiz: ArcticQuiz | None = None
 
             progress_bar = st.progress(0, text="Exploring the Arctic for you 🏔️...")
+
+            loading_placeholder = st.empty()
+            with loading_placeholder.container():
+                st_lottie("https://lottie.host/44ed2dbd-c55b-49c5-9031-873c231768b2/TmmqUQG5Bt.json", width=400)
+
             time.sleep(2)
 
             try:
@@ -112,6 +127,8 @@ class ArcticQueryQuest:
 
                 progress_bar.progress(100, text="Get ready for the Arctic Query Quiz 🏔️...")
                 time.sleep(1)
+
+                loading_placeholder.empty()
 
             except Exception as e:
                 logger.error(f"error in quiz generation: {e}")

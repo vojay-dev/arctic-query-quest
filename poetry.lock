@@ -2609,6 +2609,20 @@ files = [
 streamlit = ">=1.0.0"
 
 [[package]]
+name = "streamlit-lottie"
+version = "0.0.5"
+description = "A Streamlit custom component to load Lottie animations"
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "streamlit-lottie-0.0.5.tar.gz", hash = "sha256:c61589fb92bdf1dd5bd0a2ea75315d92e3383f46059b3704515d096a1e953d79"},
+    {file = "streamlit_lottie-0.0.5-py3-none-any.whl", hash = "sha256:98656d6f1cc99c5d96fb8329bafbcdbb65709ad0a05176dffdf4755f6fc04cff"},
+]
+
+[package.dependencies]
+streamlit = ">=0.63"
+
+[[package]]
 name = "tenacity"
 version = "8.3.0"
 description = "Retry code until it succeeds"
@@ -3071,4 +3085,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "9dbc9cf4c389cc647c856d2850b263238b81ff9fa62e97298fc7ef120057f124"
+content-hash = "0e0d287c981c7007477301d160663b211f2364f1079d9cf27c20ab9c85a91a5b"

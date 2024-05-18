@@ -19,6 +19,7 @@ ruff = "^0.4.4"
 watchdog = "^4.0.0"
 streamlit-js-eval = "^0.1.7"
 pytest = "^8.2.0"
+streamlit-lottie = "^0.0.5"
 
 [build-system]
 requires = ["poetry-core"]
