@@ -5,6 +5,7 @@ from enum import Enum
 from pathlib import Path
 
 import streamlit as st
+from streamlit_js_eval import streamlit_js_eval
 
 
 class AppState(Enum):
@@ -100,3 +101,11 @@ def render_link_with_svg_icon(link, text, svg):
     link = f'<a style="margin-right: 5px; margin-left: 5px;" href="{link}" target="_blank">{text}</a>'
     html = f"{svg}{link}"
     st.write(html, unsafe_allow_html=True)
+
+
+def console_log(text):
+    try:
+        text = text.replace("`", "\\`")
+        streamlit_js_eval(js_expressions=f"console.log(`{text}`)")
+    except Exception as e:
+        logging.error(f"could not evaluate console.log JS: {e}")

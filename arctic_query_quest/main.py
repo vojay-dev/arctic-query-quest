@@ -1,21 +1,16 @@
-import logging
-import sys
-
 import streamlit as st
 
-from common import AppState, init_page
 from app import ArcticQueryQuest
-
-logger = logging.getLogger(__name__)
+from common import AppState, init_page, console_log
 
 if __name__ == '__main__':
-    logging.info("initializing app...")
     init_page()
+    console_log(f"init page done")
     arctic_query_quest: ArcticQueryQuest = ArcticQueryQuest()
 
     state = st.session_state.app_state
 
-    logging.info(f"rendering state: {state}")
+    console_log(f"rendering state: {state}")
     if state == AppState.START:
         arctic_query_quest.start()
     elif state == AppState.QUIZ:

@@ -7,6 +7,8 @@ import logging
 from langchain_community.llms.replicate import Replicate
 from pydantic import BaseModel
 
+from arctic_query_quest.common import console_log
+
 logger = logging.getLogger(__name__)
 
 SYSTEM_PROMPT = """
@@ -94,4 +96,5 @@ class ArcticClient:
             chunks.append(chunk)
 
         output = "".join(chunks)
+        console_log(f"LLM output: {output}")
         return self._parse_output(output)
