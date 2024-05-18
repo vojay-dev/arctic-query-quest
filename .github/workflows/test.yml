@@ -35,7 +35,7 @@ jobs:
           [gcp]
           project_id = "dummy"
           private_key_id = "dummy"
-          private_key = "dummy"
+          private_key = "-----BEGIN PRIVATE KEY-----\ndummy\n-----END PRIVATE KEY-----\n"
           client_email = "dummy"
           client_id = "dummy"
           client_x509_cert_url = "dummy"
