@@ -49,7 +49,7 @@ def menu():
         - **Hard**: `3 points`
         """)
         st.divider()
-        st.markdown("### 🚀 Social")
+        st.html("<h3 class='arctic'>🚀 Social</h3>")
         render_link_with_svg_icon(
             "https://www.linkedin.com/in/vjanz/",
             "LinkedIn",
@@ -69,7 +69,7 @@ def menu():
         )
 
         st.divider()
-        st.markdown("### 🧪 Debugging")
+        st.html("<h3 class='arctic'>🧪 Debugging</h3>")
         st.markdown(f"Current app state: `{st.session_state.app_state.value}`")
 
 

@@ -1,8 +1,5 @@
-import os
 from google.cloud import texttospeech
 from google.oauth2 import service_account
-
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "gcp-vojay-tts.json"
 
 
 class SpeechClient:
