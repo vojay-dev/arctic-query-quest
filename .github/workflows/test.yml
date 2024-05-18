@@ -27,7 +27,7 @@ jobs:
           poetry install
 
       - name: Run tests
-        run: poetry run python -m pytest -v
+        run: poetry run python -m pytest tests/ -v
 
       - name: Lint
         uses: chartboost/ruff-action@v1
