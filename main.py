@@ -1,11 +1,22 @@
+import time
+
 import streamlit as st
 
 from arctic import ArcticClient, ArcticQuiz
 from common import AppState, init_page, load_model, read
 from prompt import PromptGenerator, get_difficulty_by_name
+from tts import SpeechClient
 
 prompt_generator: PromptGenerator = PromptGenerator()
 arctic_client: ArcticClient = ArcticClient()
+tts_client: SpeechClient = SpeechClient(
+    st.secrets.gcp.project_id,
+    st.secrets.gcp.private_key_id,
+    st.secrets.gcp.private_key,
+    st.secrets.gcp.client_email,
+    st.secrets.gcp.client_id,
+    st.secrets.gcp.client_x509_cert_url
+)
 
 init_page()
 placeholder = st.empty()
@@ -78,23 +89,40 @@ def quiz():
         st.divider()
 
         generated_quiz: ArcticQuiz | None = None
-        with st.spinner("Exploring the Arctic for you..."):
-            try:
-                prompt = prompt_generator.generate_prompt(
-                    model=model,
-                    difficulty=get_difficulty_by_name(st.session_state.difficulty),
-                )
 
-                generated_quiz = arctic_client.invoke(prompt)
-            except Exception as e:
-                st.markdown(f"An error occurred: {e}")
-                st.divider()
-                st.markdown("Don't Worry, Be Happy - reload the page and try again!")
+        progress_text = "Operation in progress. Please wait."
+        progress_bar = st.progress(0, text=progress_text)
+
+        progress_bar.progress(0, text="Exploring the Arctic for you...")
+        time.sleep(2)
+
+        try:
+            progress_bar.progress(20, text="Generating a quiz for you...")
+            prompt = prompt_generator.generate_prompt(
+                model=model,
+                difficulty=get_difficulty_by_name(st.session_state.difficulty),
+            )
+
+            generated_quiz = arctic_client.invoke(prompt)
+
+            progress_bar.progress(60, text="Generating speech...")
+            speech_question = tts_client.synthesize(generated_quiz.question)
+
+            progress_bar.progress(100, text="Get ready for the Arctic Query Quiz 🏔️...")
+            time.sleep(1)
+
+        except Exception as e:
+            st.markdown(f"An error occurred: {e}")
+            st.divider()
+            st.markdown("Don't Worry, Be Happy - reload the page and try again!")
 
         if generated_quiz:
             st.markdown("## :speech_balloon: Question")
             with st.chat_message("assistant"):
                 st.markdown(generated_quiz.question)
+
+            st.audio(speech_question, format="audio/mp3", autoplay=True)
+
             st.markdown("## :bulb: Answers")
             with st.chat_message("assistant"):
                 st.markdown(f"1) {generated_quiz.answer_1}")
