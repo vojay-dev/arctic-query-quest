@@ -6,3 +6,7 @@ base="dark"
 primaryColor="#32fcff"
 backgroundColor="#23232b"
 secondaryBackgroundColor="#383844"
+
+[logger]
+level = "info"
+messageFormat = "%(asctime)s %(message)s"

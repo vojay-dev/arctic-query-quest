@@ -53,7 +53,7 @@ class ArcticClient:
             self,
             top_k: int = 60,
             top_p: float = 1.0,
-            temperature: float = 0.85,
+            temperature: float = 0.8,
             min_new_tokens: int = 0,
             max_new_tokens: int = 7000,
             presence_penalty: float = 1,

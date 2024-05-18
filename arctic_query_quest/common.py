@@ -1,4 +1,6 @@
 import base64
+import logging
+import sys
 from enum import Enum
 from pathlib import Path
 
