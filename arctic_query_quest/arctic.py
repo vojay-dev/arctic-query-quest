@@ -1,13 +1,11 @@
 import json
+import logging
 import re
 from functools import wraps
 from time import sleep
-import logging
 
 from langchain_community.llms.replicate import Replicate
 from pydantic import BaseModel
-
-from arctic_query_quest.common import console_log
 
 logger = logging.getLogger(__name__)
 
@@ -87,7 +85,7 @@ class ArcticClient:
 
     def _parse_output(self, text: str) -> ArcticQuiz:
         json_text = self._extract_json(text)
-        return ArcticQuiz.parse_obj(json.loads(json_text.lstrip().rstrip()))
+        return ArcticQuiz.model_validate(json.loads(json_text.lstrip().rstrip()))
 
     @retry(max_retries=8)
     def invoke(self, prompt: str) -> ArcticQuiz:
@@ -96,5 +94,4 @@ class ArcticClient:
             chunks.append(chunk)
 
         output = "".join(chunks)
-        console_log(f"LLM output: {output}")
         return self._parse_output(output)
