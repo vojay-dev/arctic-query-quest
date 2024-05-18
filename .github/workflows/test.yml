@@ -26,6 +26,21 @@ jobs:
           pip install poetry
           poetry install
 
+      - name: Create dummy Streamlit secrets
+        run: |
+          mkdir -p .streamlit
+          cat <<EOF > .streamlit/secrets.toml
+          REPLICATE_API_TOKEN = "dummy"
+
+          [gcp]
+          project_id = "dummy"
+          private_key_id = "dummy"
+          private_key = "dummy"
+          client_email = "dummy"
+          client_id = "dummy"
+          client_x509_cert_url = "dummy"
+          EOF
+
       - name: Run tests
         run: poetry run python -m pytest tests/ -v
 
