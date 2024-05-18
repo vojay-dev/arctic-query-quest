@@ -86,6 +86,39 @@ business logic splits into the following classes:
 
 ![Application architecture](images/architecture.png)
 
+#### Project build and dependency management
+
+The project uses [Poetry](https://python-poetry.org/) for dependency management. The three main tasks Poetry can help
+you with are: Build, Publish and Track. The idea is to have a deterministic way to manage dependencies, to share your
+project and to track dependency states.
+
+Poetry also handles the creation of virtual environments for you. Per default, those are in a centralized folder within
+your system. However, if you prefer to have the virtual environment of project in the project folder, like I do, it is
+a simple config change:
+
+```sh
+poetry config virtualenvs.in-project true
+```
+
+With `poetry new` you can then create a new Python project. It will create a virtual environment linking you systems
+default Python. If you combine this with [pyenv](https://github.com/pyenv/pyenv){:target="_blank"}, you get a flexible
+way to create projects using specific versions. Alternatively, you can also tell Poetry directly which Python
+version to use: `poetry env use /full/path/to/python`.
+
+Once you have a new project, you can use `poetry add` to add dependencies to it. Also, with `poetry run` you can
+execute commands within the virtual environment of the project without manually activating it.
+
+With this, Arctic Query Quest is using Poetry to manage its dependencies and to ensure a clean and reproducible
+development environment. Simply run `poetry install` to install all dependencies.
+
+Also, the project itself, tests and the linter can easily be executed with Poetry:
+
+- Run project: `poetry run streamlit run arctic_query_quest/main.py`
+- Run tests: `poetry run python -m pytest tests/ -v`
+- Run linter: `poetry run ruff check --fix`
+
+To make it even more convenient, the project provides a `Makefile` with shortcuts for these tasks.
+
 #### State management
 
 The Streamlit web app is the main interface for the user. To increase the look and feel of the app, it is not using
