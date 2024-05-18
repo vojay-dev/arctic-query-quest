@@ -1,6 +1,5 @@
 import base64
 import logging
-import sys
 from enum import Enum
 from pathlib import Path
 
@@ -27,18 +26,18 @@ def configure():
 
 
 def init_state():
-    if "score" not in st.session_state:
-        st.session_state.score = 0
-    if "app_state" not in st.session_state:
-        st.session_state.app_state = AppState.START
-    if "db_model" not in st.session_state:
-        st.session_state.db_model = None
-    if "generated_quiz" not in st.session_state:
-        st.session_state.generated_quiz = None
-    if "user_answer" not in st.session_state:
-        st.session_state.user_answer = None
-    if "difficulty" not in st.session_state:
-        st.session_state.difficulty = None
+    state_defaults = {
+        "score": 0,
+        "app_state": AppState.START,
+        "db_model": None,
+        "generated_quiz": None,
+        "user_answer": None,
+        "difficulty": None,
+    }
+
+    for key, default in state_defaults.items():
+        if key not in st.session_state:
+            st.session_state[key] = default
 
 
 def menu():
@@ -84,15 +83,14 @@ def init_page():
 
 
 def load_model() -> str:
+    model_files = {
+        "Shop": "models/shop.sql",
+        "Game": "models/game.sql",
+        "Books": "models/books.sql",
+    }
+
     model = st.session_state.db_model
-    if model and model == "Shop":
-        return read("models/shop.sql")
-    elif model and model == "Game":
-        return read("models/game.sql")
-    elif model and model == "Books":
-        return read("models/books.sql")
-    else:
-        return read("models/shop.sql")
+    return read(model_files.get(model, "models/shop.sql"))
 
 
 def render_link_with_svg_icon(link, text, svg):
