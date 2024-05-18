@@ -5,7 +5,7 @@ from common import AppState, init_page, console_log
 
 if __name__ == '__main__':
     init_page()
-    console_log(f"init page done")
+    console_log("init page done")
     arctic_query_quest: ArcticQueryQuest = ArcticQueryQuest()
 
     state = st.session_state.app_state
