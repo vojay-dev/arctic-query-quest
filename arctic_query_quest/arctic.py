@@ -55,7 +55,7 @@ class ArcticClient:
             top_p: float = 1.0,
             temperature: float = 0.85,
             min_new_tokens: int = 0,
-            max_new_tokens: int = 4000,
+            max_new_tokens: int = 7000,
             presence_penalty: float = 1,
             frequency_penalty: float = 0.2
     ):
@@ -81,7 +81,11 @@ class ArcticClient:
         if not matches or len(matches.groups()) != 1:
             raise ValueError(f"text contains none or too many JSON objects: {text}")
 
-        return matches.group(0)
+        return matches.group(1)
+
+    def _parse_output(self, text: str) -> ArcticQuiz:
+        json_text = self._extract_json(text)
+        return ArcticQuiz.parse_obj(json.loads(json_text.lstrip().rstrip()))
 
     @retry(max_retries=8)
     def invoke(self, prompt: str) -> ArcticQuiz:
@@ -90,5 +94,4 @@ class ArcticClient:
             chunks.append(chunk)
 
         output = "".join(chunks)
-        json_text = self._extract_json(output)
-        return ArcticQuiz.parse_obj(json.loads(json_text))
+        return self._parse_output(output)
