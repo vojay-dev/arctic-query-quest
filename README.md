@@ -26,7 +26,7 @@ It was eye-opening that gaming is not only a huge market but also holds a great 
 Generating SQL queries based on natural language and a given data model is a typical use-case for LLMs especially like
 the Snowflake Arctic Instruct model. But what about adding a twist? What if we use it to generate quiz questions based
 on a data model, so that the user can learn SQL and get familiar with the data model in a fun and engaging way? The
-answer is 🏔️ Arctic Query Quest!
+answer is 🏔️ **Arctic Query Quest**!
 
 Getting answers from LLMs right away is great, but knowledge sharing and learning falls short often in a business
 context. Arctic Query Quest is a proof of concept to revolutionize SQL education in companies, schools and universities.
@@ -47,6 +47,9 @@ The Snowflake Arctic Instruct model is used to create a quiz using the generated
 The user is then presented with the quiz question and three possible answers, all part of the model response. The user
 can make a guess, the app will evaluate the answer and provide an explanation of the correct answer.
 
+Via speech synthesis, the app reads the question out loud to the user. This is especially useful for users with visual
+impairments or for users who prefer to listen to the question instead of reading it.
+
 ![Arctic Query Quest Screenshot](images/screenshot.png)
 
 ## ⚙️ How I built it
@@ -61,10 +64,27 @@ can make a guess, the app will evaluate the answer and provide an explanation of
 - [Poetry](https://python-poetry.org/) for dependency management
 - [Replicate](https://replicate.com/) for running predictions with the Snowflake Arctic model
 - [Snowflake Arctic Instruct](https://www.snowflake.com/en/data-cloud/arctic/) as the base LLM for any predictions
+- [pytest](https://docs.pytest.org/en/8.2.x/) for test implementation and execution
+- [Ruff](https://docs.astral.sh/ruff/) as linter and code formatter
+- [Github Actions](https://github.com/features/actions) to automatically run tests and linter on every push
 
 ![System Overview](images/overview.png)
 
 ### Streamlit web app
+
+The Streamlit application was implemented with focus on making it production ready with clean code, high impact
+and visual appeal. The app is structured in a way that it is easy to extend and maintain. Therefore, it uses
+`arctic_query_quest/main.py` as a rather minimal entry point and all other logic is separated in different classes.
+
+The main file simply calls the render function depending on the current state of the application. The rest of the
+business logic splits into the following classes:
+
+`ArcticQueryQuest`: Main class which renders the different states and brings all parts together.
+`ArcticClient`: Handles the interaction with the Snowflake Arctic Instruct model via Replicate.
+`PromptGenerator`: Generates the prompt in a modular way based on the user configuration.
+`SpeechClient`: Handles the speech synthesis via the Google Cloud speech API.
+
+![Application architecture](images/architecture.png)
 
 #### State management
 
@@ -91,26 +111,42 @@ to remove elements at any point, or replace several elements at once. In this ca
 when the state changes. That way, the app is implementing a more complex user flow while handling everything with a
 single page approach.
 
-With the following helper function, the state is changed easily and also takes care of removing the current content:
+With the following function in the `ArcticQueryQuest` class, the state is changed easily and also takes care of removing the current content:
 
 ```py
-def set_state(state: AppState):
-    placeholder.empty()
-    st.session_state.app_state = state
+    def set_state(self, state: AppState):
+        logger.info(f"switching state to {state}")
+        self.placeholder.empty()
+        st.session_state.app_state = state
 ```
+
+It also shows that the app is using logging to improve tracking the state flow.
 
 To render the content, each state has its own function. Then main function then simply calls the function based
 on the current state:
 
 ```py
 if __name__ == '__main__':
-    if st.session_state.app_state == AppState.START:
-        start()
-    elif st.session_state.app_state == AppState.QUIZ:
-        quiz()
-    elif st.session_state.app_state == AppState.EVALUATE:
-        evaluate()
+    init_page()
+    console_log("init page done")
+    arctic_query_quest: ArcticQueryQuest = ArcticQueryQuest()
+
+    state = st.session_state.app_state
+
+    console_log(f"rendering state: {state}")
+    if state == AppState.START:
+        arctic_query_quest.start()
+    elif state == AppState.QUIZ:
+        arctic_query_quest.quiz()
+    elif state == AppState.EVALUATE:
+        arctic_query_quest.evaluate()
 ```
+
+Another interesting aspect which can be seen here is the `console_log` helper function. This function is used to invoke
+a JavaScript snippet, which simply calls `console.log` for a given string. That way, relevant messages like the current
+state can be logged to the browser console.
+
+![Logging](images/logging.png)
 
 #### Configuration and customization
 
