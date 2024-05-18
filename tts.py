@@ -16,7 +16,7 @@ class SpeechClient:
         client_id: str,
         client_x509_cert_url: str
     ):
-        service_account.Credentials.from_service_account_info({
+        credentials = service_account.Credentials.from_service_account_info({
             "type": "service_account",
             "project_id": project_id,
             "private_key_id": private_key_id,
@@ -29,7 +29,7 @@ class SpeechClient:
             "client_x509_cert_url": client_x509_cert_url,
             "universe_domain": "googleapis.com"
         })
-        self.client = texttospeech.TextToSpeechClient()
+        self.client = texttospeech.TextToSpeechClient(credentials=credentials)
         self.voice = texttospeech.VoiceSelectionParams(
             language_code="en-US",
             name="en-US-Studio-O",
