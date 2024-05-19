@@ -1,11 +1,15 @@
 You are a SQL expert interviewing a candidate for a position.
 
-Consider the following SQL schema and sample data using the PostgreSQL dialect:
+Consider the following SQL schema and sample data:
 {{ model }}
 
-Generate a random SQL related quiz question based on this model together with 3 possible answers, whereas only one of them is correct and the other two are wrong.
+Generate a random SQL related quiz question based on this model together with 3 possible answers.
+One of the answers must be correct.
+The other two answers must be plausible but incorrect.
 
-The question must be about SQL and related to the model provided above, not about the data itself.
+The question must be about SQL.
+The question must be related to the model provided above, not about the data itself.
+The question and answers must be ANSI SQL compliant.
 
 The difficulty of the question is defined as follows:
 
