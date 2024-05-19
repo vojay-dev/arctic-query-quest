@@ -143,7 +143,7 @@ class ArcticQueryQuest:
                 with st.chat_message("assistant"):
                     st.markdown(generated_quiz.question)
 
-                st.audio(speech_question, format="audio/mp3", autoplay=True)
+                st.audio(speech_question, format="audio/mpeg", autoplay=True)
 
                 st.markdown("## :bulb: Answers")
                 with st.chat_message("assistant"):
