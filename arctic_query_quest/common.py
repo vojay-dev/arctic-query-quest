@@ -22,7 +22,7 @@ def apply_style():
 
 
 def configure():
-    st.set_page_config(layout="wide")
+    st.set_page_config(page_title="Arctic Query Quest", page_icon=":snowflake:", layout="wide")
 
 
 def init_state():
