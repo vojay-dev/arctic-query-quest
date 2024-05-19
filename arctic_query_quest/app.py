@@ -38,7 +38,7 @@ class ArcticQueryQuest:
         with self.placeholder.container():
             st.html("<h1 class='arctic'>🏔️ Arctic Query Quest</h1>")
 
-            tab_start, tab_about = st.tabs(["Start", "About the project"])
+            tab_start, tab_about = st.tabs(["⚙️ Start", "🎓 About the project"])
 
             with tab_start:
                 col1, col2 = st.columns(2)
@@ -80,11 +80,12 @@ class ArcticQueryQuest:
                     with st.expander("Open to see a system overview..."):
                         st.image("images/overview.png", use_column_width=True)
 
-            st.divider()
             model = load_model()
             with st.expander(f"Open to see selected database model (`{st.session_state.db_model}`)..."):
                 st.code(model, language="sql")
-            st.button(":video_game: Start the Quest!", on_click=self.set_state, args=(AppState.QUIZ,))
+
+            with st.container(border=True):
+                st.button(":video_game: Start the Quest!", on_click=self.set_state, args=(AppState.QUIZ,))
 
     def answer(self, generated_quiz: ArcticQuiz, user_answer: int):
         st.session_state.generated_quiz = generated_quiz
