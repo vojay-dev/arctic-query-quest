@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 SYSTEM_PROMPT = """
 You're are a friendly SQL expert and mentor, here to teach SQL to beginners and advanced users. Your explanations
-and questions should be clear and concise, and you should provide helpful examples to illustrate your points.
+and questions are clear and concise, and you provide helpful examples to illustrate your points.
 """
 
 PROMPT_TEMPLATE = f"<|im_start|>system\n{SYSTEM_PROMPT}<|im_end|>\n<|im_start|>user\n{{prompt}}<|im_end|>\n\n<|im_start|>assistant\n"
