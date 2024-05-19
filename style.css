@@ -76,3 +76,7 @@ code {
 button {
     padding: 15px !important;
 }
+
+#stDecoration {
+    background-image: linear-gradient(90deg, rgb(50 252 255), #1d6277) !important;
+}
