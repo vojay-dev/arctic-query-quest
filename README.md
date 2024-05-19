@@ -337,6 +337,7 @@ Last but not least, the most important aspect, this project is a proof of concep
 - **Custom models**: Allow users to upload their own data models and generate quizzes based on them.
 - **Multiplayer mode**: Add a multiplayer mode to compete with friends or colleagues.
 - **Leaderboard**: Implement a leaderboard to track progress and compare scores.
+- **Extract components**: I would like to extract several functions and components, especially in the area of customization, to make them available to the Streamlit community.
 
 But most important: 
 
