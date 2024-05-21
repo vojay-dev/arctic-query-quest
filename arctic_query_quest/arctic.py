@@ -51,12 +51,12 @@ class ArcticClient:
 
     def __init__(
             self,
-            top_k: int = 60,
+            top_k: int = 35,
             top_p: float = 1.0,
-            temperature: float = 0.8,
+            temperature: float = 0.7,
             min_new_tokens: int = 0,
             max_new_tokens: int = 7000,
-            presence_penalty: float = 1,
+            presence_penalty: float = 0.8,
             frequency_penalty: float = 0.2
     ):
         self.llm = Replicate(
